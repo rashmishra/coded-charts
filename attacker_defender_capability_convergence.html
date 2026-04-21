@@ -1,0 +1,135 @@
+<div style="padding: 1.5rem 0;">
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 1.5rem; font-size: 13px;">
+    <span style="display: flex; align-items: center; gap: 6px;">
+      <span style="width: 12px; height: 3px; background: #D85A30; border-radius: 1px;"></span>
+      <span style="color: var(--color-text-secondary);">Attacker capability</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px;">
+      <span style="width: 12px; height: 3px; background: #1D9E75; border-radius: 1px;"></span>
+      <span style="color: var(--color-text-secondary);">Defender capability</span>
+    </span>
+    <span style="display: flex; align-items: center; gap: 6px;">
+      <span style="width: 12px; height: 2px; border-top: 1px dashed var(--color-border-tertiary); opacity: 0.6;"></span>
+      <span style="color: var(--color-text-tertiary); font-size: 12px;">Gap narrows</span>
+    </span>
+  </div>
+
+  <div style="position: relative; width: 100%; height: 320px; margin-bottom: 1rem;">
+    <canvas id="convergenceChart" role="img" aria-label="Line chart showing attacker and defender capability trends from 2020 to 2026, with attackers rising sharply from 2024 onward and defenders gradually catching up">Attacker and defender capability over time</canvas>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px;">
+    <div style="background: var(--color-background-secondary); padding: 12px; border-radius: var(--border-radius-md);">
+      <p style="margin: 0 0 4px; color: var(--color-text-secondary); font-size: 12px;">Current gap (2026)</p>
+      <p style="margin: 0; font-size: 18px; font-weight: 500;">4 points</p>
+      <p style="margin: 4px 0 0; color: var(--color-text-tertiary); font-size: 11px;">down from 40 in 2024</p>
+    </div>
+    <div style="background: var(--color-background-secondary); padding: 12px; border-radius: var(--border-radius-md);">
+      <p style="margin: 0 0 4px; color: var(--color-text-secondary); font-size: 12px;">Defender acceleration</p>
+      <p style="margin: 0; font-size: 18px; font-weight: 500;">+10 pts</p>
+      <p style="margin: 4px 0 0; color: var(--color-text-tertiary); font-size: 11px;">2024 to 2026</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+
+// Define colors
+const attackerColor = '#D85A30';  // Coral/warm for aggressive
+const defenderColor = '#1D9E75'; // Teal/cool for defensive
+const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)';
+const textColor = isDark ? '#c2c0b6' : '#3d3d3a';
+
+const ctx = document.getElementById('convergenceChart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+    datasets: [
+      {
+        label: 'Attacker capability',
+        data: [28, 33, 41, 52, 78, 85, 88],
+        borderColor: attackerColor,
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: attackerColor,
+        pointBorderColor: attackerColor,
+        pointBorderWidth: 0,
+        tension: 0.3,
+        fill: false,
+      },
+      {
+        label: 'Defender capability',
+        data: [72, 76, 79, 81, 82, 88, 92],
+        borderColor: defenderColor,
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        pointRadius: 4,
+        pointBackgroundColor: defenderColor,
+        pointBorderColor: defenderColor,
+        pointBorderWidth: 0,
+        tension: 0.3,
+        fill: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)',
+        titleColor: textColor,
+        bodyColor: textColor,
+        borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+        borderWidth: 0.5,
+        padding: 10,
+        displayColors: true,
+        callbacks: {
+          label: function(context) {
+            return context.dataset.label + ': ' + context.parsed.y + ' points';
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          color: textColor,
+          font: { size: 12 },
+          callback: function(value) {
+            return value + '%';
+          }
+        },
+        grid: {
+          color: gridColor,
+          drawBorder: false,
+        }
+      },
+      x: {
+        ticks: {
+          color: textColor,
+          font: { size: 12 }
+        },
+        grid: {
+          display: false,
+          drawBorder: false,
+        }
+      }
+    }
+  }
+});
+</script>
